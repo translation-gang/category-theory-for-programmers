@@ -1,0 +1,183 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt,oneside]{book}
+
+% New line height: 1.05 * 1.2 = 1.26
+\renewcommand{\baselinestretch}{1.05}
+
+% Font settings
+\usepackage{minted} %----------------------------------%  Note:
+\usepackage[no-math]{fontspec}                         %  This exact order
+\defaultfontfeatures{%                                 %  of declarations
+  Scale=MatchLowercase, % needed here ...              %  is important for
+}                                                      %  single quotes not
+\setmonofont{Inconsolata LGC}                          %  to turn out curly
+                                                       %  ("typographic")
+\defaultfontfeatures{%                                 %  in verbatim blocks
+  Scale=MatchLowercase, % ... and here again           %  of Haskell code.
+  Mapping=tex-text,                                    %  Now the quote is
+  SmallCapsFeatures={LetterSpace=2.5,WordSpace=1.05},  %  upright and safely
+}                                                      %  copy-pasteable to
+\setmainfont{Linux Libertine O}                        %  the REPL without
+\setsansfont{Linux Biolinum O} %-----------------------%  giving errors.
+
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=american]{english}
+\setotherlanguages{greek}
+\usepackage[all]{nowidow}
+
+% So that file names with multiple dots don't confuse
+% graphicx package when using \includegraphics command:
+\usepackage[multidot]{grffile}
+\usepackage{graphicx}
+\usepackage{caption, wrapfig, framed, subfigure}
+\usepackage[export]{adjustbox}
+\captionsetup{labelformat=empty,font=scriptsize}
+
+\usepackage[usenames,dvipsnames,x11names]{xcolor}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+% To use Libertine letters and numbers,
+% but tx-style operators in math environment:
+\usepackage[libertine]{newtxmath}
+% Needed to display additional math unicode symbols (like double-colon)
+\usepackage{unicode-math}
+
+% Workaround to fix mismatched left and right math delimiters. Taken from:
+% http://tex.stackexchange.com/questions/63410/parentheses-differ-xelatex-fontspec-newtxmath-libertine
+\DeclareSymbolFont{parenthesis}{T1}{fxl}{m}{n}
+\DeclareMathDelimiter{(}{\mathopen}{parenthesis}{"28}{largesymbols}{"00}
+\DeclareMathDelimiter{)}{\mathclose}{parenthesis}{"29}{largesymbols}{"01}
+\DeclareMathDelimiter{[}{\mathopen}{parenthesis}{"5B}{largesymbols}{"02}
+\DeclareMathDelimiter{]}{\mathclose}{parenthesis}{"5D}{largesymbols}{"03}
+\DeclareMathDelimiter{\lbrace}{\mathopen}{parenthesis}{"7B}{largesymbols}{"08}
+\DeclareMathDelimiter{\rbrace}{\mathclose}{parenthesis}{"7D}{largesymbols}{"09}
+
+\usepackage{fancyvrb}
+\usepackage{imakeidx}
+\usepackage[totoc,font=footnotesize]{idxlayout}
+\usepackage{fancyhdr}
+\pagestyle{plain}
+\usepackage[final]{pdfpages} % inserts pages from a pdf file
+
+% Page geometry for 10-inch tablets:
+\usepackage[papersize={148mm,197mm},
+            top=21mm,
+            textwidth=111mm,  % increase one or both of these by 1mm or so to
+            textheight=148mm, % make the source compile with TeX Live 2013
+            hcentering,       % if you get "Too many unprocessed floats" error
+]{geometry}
+
+\usepackage{titlesec}  % to change the appearance of section titles
+\usepackage{listings}  % for syntax highlighted code listings
+\usepackage{verbatim}  % for simple verbatim and comment environments
+\usepackage{enumerate} % allows customized labels in enumerations
+\usepackage{enumitem}  % allows nested enumeration with numbers
+\usepackage{hyperref}  % makes cross references and URLs clickable
+\definecolor{LinkRed}{HTML}{80171F}
+\hypersetup{
+  pdfauthor={Bartosz Milewski},
+  pdftitle={Category Theory for Programmers},
+  pdfsubject={category theory, computer science, programming, abstraction},
+  colorlinks=true,
+  linkcolor=LinkRed,
+  urlcolor=LinkRed,
+}
+\usepackage{subfiles}
+\makeatletter
+\let\org@subfile\subfile
+\renewcommand*{\subfile}[1]{%
+  \filename@parse{#1}% LaTeX's file name parser
+  \expandafter
+  \graphicspath\expandafter{\expandafter{\filename@area}}%
+  \org@subfile{"#1"}%
+}
+\makeatother
+
+% Document colors
+\definecolor{SchemeLight}   {HTML} {686868}
+\definecolor{SchemeSteel}   {HTML} {888888}
+\definecolor{SchemeDark}    {HTML} {262626}
+\definecolor{SchemeBlue}    {HTML} {4172A3}
+\definecolor{SchemeGreen}   {HTML} {487818}
+\definecolor{SchemeBrown}   {HTML} {A07040}
+\definecolor{SchemeRed}     {HTML} {AD4D3A}
+\definecolor{SchemeViolet}  {HTML} {7040A0}
+\definecolor{DropCapGray}   {HTML} {B8B8B8}
+\definecolor{ChapterGray}   {HTML} {C8C8C8}
+\definecolor{ChapterViolet} {HTML} {AEAECE}
+\definecolor{DropCapViolet} {HTML} {9090C0}
+
+\usepackage{lettrine}  % adds commands that make drop capitals
+\renewcommand{\LettrineFontHook}{\rmfamily\mdseries\color{DropCapViolet}}
+\renewcommand{\DefaultLraise}{0.00}
+\renewcommand{\DefaultLoversize}{0.02}
+\renewcommand{\DefaultLhang}{0.12}
+\setlength{\DefaultFindent}{1pt}
+\setlength{\DefaultNindent}{0em}
+
+\newcommand{\acronym}[1]{\textsc{\fontspec[Numbers={OldStyle}]{Linux Libertine O}\MakeLowercase{#1}}}
+\newcommand{\uppersc}[1]{{\fontspec[Letters=UppercaseSmallCaps]{Linux Libertine O}#1}}
+\newcommand{\newterm}[1]{\index{#1}\emph{#1}}
+\newcommand{\var}[1]{\textsl{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\link}[1]{\hyperref[#1]{#1}}
+\newcommand{\namelink}[2]{\hyperref[#1]{#2}}
+\newcommand{\heading}[1]{{\sffamily\bfseries #1}}
+\newcommand{\dark}{\color{SchemeDark}}
+\newcommand{\mono}[1]{\hbox{\ttfamily\scriptsize #1}}
+\newcommand{\monoit}[1]{\hbox{\ttfamily\itshape\scriptsize #1}}
+\newcommand{\mathtext}[1]{\ensuremath{\pmb{#1}}}
+
+\makeatletter
+\newcommand\urlfootnote@[1]{\footnote{\url@{#1}}}
+\DeclareRobustCommand{\urlfootnote}{\hyper@normalise\urlfootnote@}
+\makeatother
+
+\newenvironment{example}%
+  {\verbatim\small}%
+  {\endverbatim}
+
+\newenvironment{smallexample}%
+  {\verbatim\footnotesize}%
+  {\endverbatim}
+
+\titleformat{\chapter}[display]
+  {\color{SchemeDark}\normalfont\sffamily\bfseries\LARGE}
+  {\filright \color{ChapterViolet}\sffamily\mdseries
+    \fontsize{6em}{0em}\selectfont
+    \oldstylenums{\thechapter}}
+  {1em}
+  {\filright}
+
+\titleformat{\section}
+{\color{SchemeDark}\normalfont\Large\sffamily\bfseries}
+{\color{DropCapViolet}\thesection}{0.8em}{}
+
+\titleformat{\subsection}
+{\color{SchemeDark}\normalfont\large\sffamily\bfseries}
+{\color{DropCapViolet}\thesubsection}{0.8em}{}
+
+\titleformat{\subsubsection}
+{\color{black}\normalfont\normalsize\sffamily\bfseries}
+{\color{DropCapViolet}\thesubsubsection}{0.8em}{}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\frenchspacing
+\makeindex
+
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%====================%
+%  End of preamble.  %
+%====================%
+
+\begin{document}
+
+\VerbatimFootnotes
