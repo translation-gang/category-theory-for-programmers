@@ -8,7 +8,7 @@ all: ctfp.pdf
 
 ctfp.pdf: ctfp.tex coverpage.pdf ${FIG}
 	latexmk -shell-escape -pdflatex="xelatex %O %S" -pdf -dvi- -ps- $<; \
-	mv ctfp.pdf ../category-theory-for-programmers.pdf
+	mv ctfp.pdf ../category-theory-for-programmers-ru.pdf
 
 %.pdf: %.svg
 	inkscape -f ${DIR}/$< -C -A ${DIR}/$@
