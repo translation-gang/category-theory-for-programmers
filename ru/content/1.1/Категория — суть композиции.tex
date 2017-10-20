@@ -1,56 +1,50 @@
-\lettrine[lhang=0.17]{A}{category} is an embarrassingly simple concept.
-A category consists of \newterm{objects} and \newterm{arrows} that go between them. That's
-why categories are so easy to represent pictorially. An object can be
-drawn as a circle or a point, and an arrow\ldots{} is an arrow. (Just
-for variety, I will occasionally draw objects as piggies and arrows as
-fireworks.) But the essence of a category is \newterm{composition}. Or, if you
-prefer, the essence of composition is a category. Arrows compose, so
-if you have an arrow from object $A$ to object $B$, and another arrow from
-object $B$ to object $C$, then there must be an arrow --- their composition
---- that goes from $A$ to $C$.
+\lettrine[lhang=0.17]{К}{атегория} — концепция на удивление простая.
+Категория состоит из \newterm{объектов} и \newterm{стрелок}, идущих от одних объектов к другим.
+Поэтому категории так легко представлять картинками. Объект можно изобразить кружочком или точкой,
+а стрелка — она стрелка и есть. (Исключительно для разнообразия, я время от времени буду изображать
+объекты в виде поросят, а стрелки — фейерверками.) Но сутью категории является \newterm{композиция}.
+Ну или сутью композиции является категория — как вам больше нравится. Стрелки можно компоновать, так
+что если у вас есть стрелка от объекта $A$ к объекту $B$, и вторая стрелка от объекта $B$ к объекту $C$,
+то обязательно должна быть и ещё одна стрелка  --- их композиция --- идущая от $A$ к $C$.
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{images/img_1330.jpg}
-\caption{In a category, if there is an arrow going from $A$ to $B$ and an arrow going from $B$ to $C$
-then there must also be a direct arrow from $A$ to $C$ that is their composition. This diagram is not a full
-category because it’s missing identity morphisms (see later).}
-\end{figure}
+\caption{В категории, если есть стрелка от $A$ к $B$ и стрелка от $B$ к $C$, то обязательно должна быть и стрелка,
+соединяющая $A$ и $C$ напрямую — их композиция. Представленная диаграмма — ещё не категория, так как ей не хватает
+тождественных морфизмом (см. далее).}
 
-\section{Arrows as Functions}\label{arrows-as-functions}
+\section{Стрелки как функции}\label{стрелки-как-функции}
 
-Is this already too much abstract nonsense? Do not despair. Let's talk
-concretes. Think of arrows, which are also called \newterm{morphisms}, as
-functions. You have a function \code{f} that takes an argument of type $A$ and
-returns a $B$. You have another function \code{g} that takes a $B$ and returns a $C$.
-You can compose them by passing the result of $f$ to $g$. You have just
-defined a new function that takes an $A$ and returns a $C$.
+Не многовато ли уже абстрактной чуши? Не отчаивайтесь. Давайте поговорим о конкретных вещах.
+Думайте о стрелках, которые ещё называются \newterm{морфизмами}, как о функциях.
+У вас есть функция \code{f}, которая принимает аргумент типа $A$, и возвращает аргумент типа $B$.
+Есть другая функция \code{g}, принимающая $B$, и возвращающая $C$. Их можно скомпоновать, попросту
+передав результат $f$ в $g$. Таким образом мы определим новую функцию, принимающую $A$ и возвращающую $C$.
 
-In math, such composition is denoted by a small circle between
-functions: \ensuremath{g \circ f}. Notice the right to left order of composition. For some
-people this is confusing. You may be familiar with the pipe notation in
-Unix, as in:
+В математике такая композиция обозначается маленькой точкой между функциями: \ensuremath{g \circ f}.
+Обратите внимание на порядок записи: функции записаны справа налево. Некоторых это может смутить. Возможно, вы знакомы
+с нотацией каналов в Unix:
 
 \begin{Verbatim}
 lsof | grep Chrome
 \end{Verbatim}
-or the chevron \code{>>} in F\#, which both
-go from left to right. But in mathematics and in Haskell functions
-compose right to left. It helps if you read \(g \circ f\) as ``g \emph{after} f.''
+или с шевроном \code{>>} в F\# —-- оба записываются слева направо.
+Но в математике и в Haskell функции компонуются справа налево.
+Полезно читать \(g \circ f\) как ``g \emph{после} f.''
 
-Let's make this even more explicit by writing some C code. We have one
-function \code{f} that takes an argument of type \code{A} and
-returns a value of type \code{B}:
+Давайте сделаем всё ещё более явным, написав немного кода на C. У нас есть одна
+функция \code{f}, принимающая аргумент типа \code{A} и возвращающая значение типа \code{B}:
 
 \begin{Verbatim}
 B f(A a);
 \end{Verbatim}
-and another:
+и другая:
 
 \begin{Verbatim}
 C g(B b);
 \end{Verbatim}
-Their composition is:
+Их композицией будет:
 
 \begin{Verbatim}
 C g_after_f(A a)
@@ -58,44 +52,41 @@ C g_after_f(A a)
     return g(f(a));
 }
 \end{Verbatim}
-Here, again, you see right-to-left composition: \code{g(f(a))}; this
-time in C.
+Здесь снова мы видим запись композиции справа налево: \code{g(f(a))}; на этот раз на языке C.
 
-I wish I could tell you that there is a template in the C++ Standard
-Library that takes two functions and returns their composition, but
-there isn't one. So let's try some Haskell for a change. Here's the
-declaration of a function from A to B:
+Хотел бы я вам сказатЬ6 что в Стандартной Библиотеке C++ есть шаблон,
+который принимает две функции и возвращает их композицию, но увы --- его нет.
+Давайте для разнообразия попробуем Haskell. Вот определение функции из A в B:
 
 \begin{Verbatim}
 f :: A -> B
 \end{Verbatim}
-Similarly:
+Аналогично:
 
 \begin{Verbatim}
 g :: B -> C
 \end{Verbatim}
-Their composition is:
+И их композиция:
 
 \begin{Verbatim}
 g . f
 \end{Verbatim}
-Once you see how simple things are in Haskell, the inability to express
-straightforward functional concepts in C++ is a little embarrassing. In
-fact, Haskell will let you use Unicode characters so you can write
-composition as:
+После того как увидишь, насколько просто некоторые вещи делаются в Haskell,
+невозможность выразить простейшие функциональные концепции в C++ начинает немного напрягать.
+В действительности, Haskell позволяет ещё и символы Unicode в коде использовать, так что
+композицию можно записать и так:
 
 \begin{Verbatim}
 g ◦ f
 \end{Verbatim}
-You can even use Unicode double colons and arrows:
+Можно даже двойные двоеточия и стрелочки использовать:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 f \ensuremath{\Colon} A → B
 \end{Verbatim}
-So here's the first Haskell lesson: Double colon means ``has the type
-of\ldots{}'' A function type is created by inserting an arrow between
-two types. You compose two functions by inserting a period between them
-(or a Unicode circle).
+Итак, первый урок Haskell: двоёное двоеточие обозначает ``имеет тип\ldots{}''
+Функциональный тип создаётся помещением стрелки между двумя типами. Композиция функций
+производится вставкой точки (или Unicode-кружочка) между ними.
 
 \section{Properties of Composition}\label{properties-of-composition}
 
